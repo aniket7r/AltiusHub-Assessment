@@ -5,7 +5,7 @@ import InvoiceForm from '../InvoiceForm/InvoiceForm';
 
 const ViewComponents = () => {
     const [page, setPage] = useState(1);
-    const [rowPerPage] = useState(5);
+    const [rowsPerPage] = useState(5);
     const [showAddForm, setShowAddForm] = useState(false);
     
     const invoices = [
@@ -41,5 +41,54 @@ const ViewComponents = () => {
         {id:6, invoiceNumber: 'INV006', amount:100},
         {id:7, invoiceNumber: 'INV007', amount:100},
             
-    ]
+    ];
+
+    const handlePageChange = (event,value) => {
+        setPage(value);
+    };
+    const startIndex = (page-1)*rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    return (
+        <div>
+           {showAddForm?(
+            <div>
+                <InvoiceForm onCancel = {()=>setShowAddForm(false)}/>
+            </div>
+           ):(
+            <div>
+                <Button onClick={()=> setShowAddForm(true)} variant = "contained" color = "primary">Add</Button>
+                <TableContainer component = {Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>
+                                    Invoice Number
+                                </TableCell>
+                                <TableCell>
+                                    Amount
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {invoices.slice(startIndex,endIndex).map((invoice)=>(
+                                <TableRow key = {invoice.id} component={Link} to = {`/invoice-detail/${invoice.id}`}>
+                                    <TableCell>{invoice.invoiceNumber}</TableCell>
+                                    <TableCell>{invoice.amount}</TableCell>
+                                </TableRow>
+                                
+
+                            ))}
+                        </TableBody>
+
+
+                    </Table>
+                </TableContainer>
+                <Pagination count={Math.ceil(invoices.length/rowsPerPage)} page = {page} onChange = {handlePageChange} />
+            </div>
+    )
 }
+    </div>)
+};
+
+export default ViewComponents;
